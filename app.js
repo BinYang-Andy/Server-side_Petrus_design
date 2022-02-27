@@ -18,6 +18,7 @@ var leaderRouter = require('./routes/leaderRouter');
 var uploadRouter = require('./routes/uploadRouter');
 
 const mongoose = require('mongoose');
+const favoriteRouter = require('./routes/favoriteRouter');
 
 
 
@@ -35,6 +36,7 @@ connect.then((db)=>{
 var app = express();
 
 app.all('*',(req,res,next)=>{
+  
   if(req.secure){
     return next();
   }
@@ -64,6 +66,7 @@ app.use('/dishes', dishRouter);
 app.use('/promotions', promoRouter);
 app.use('/leaders', leaderRouter);
 app.use('/imageUpload', uploadRouter);
+app.use('/favorite',favoriteRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

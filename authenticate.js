@@ -43,42 +43,44 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
     exports.verifyUser = passport.authenticate('jwt',{session: false});
 
-    // exports.verifyAdmin = (req,res,next) =>{
-    //     if(req.user.admin)
-    //     next();
-    //     else{
-    //         var err = new Error('You are not authorized to perfor');
-    //         err.status = 403;
-    //         return next(err);
-    //     }
-    // };
-    exports.facebookPassport = passport.use(new 
-    FacebookTokenStrategy({
-        clientID: config.facebook.clientId,
-        clientSecret: config.facebook.clientSecret  
-    },(accessToken,refreshToken,profile,done)=>{
-        User.findOne({facebookId: profile.id}, (err, user)=> {
-            if (err){
-                return done(err,false);
-            }
-            if(!err && user!== null){
-                return done(null, user);
-            }
-            else{
-                user = new User({username:profile.displayName});
-                user.facebookId = profile.id;
-                user.firstname = profile.name.givenName;
-                user.lastname = profile.name.familyName;
-                user.save((err, user)=>{
-                    if (err)
-                        return done(err, false);
+    exports.verifyAdmin = function verifyAdmin(req,res,next) {
+        if(req.user.admin == true){
+            console.log('You are an Admin');
+            return next();
+        }
+        else if(req.user.admin == false){
+            var err = new Error('You are not authorized to perfor');
+            err.status = 403;
+            return next(err);
+        }
+    };
+//     exports.facebookPassport = passport.use(new 
+//     FacebookTokenStrategy({
+//         clientID: config.facebook.clientId,
+//         clientSecret: config.facebook.clientSecret  
+//     },(accessToken,refreshToken,profile,done)=>{
+//         User.findOne({facebookId: profile.id}, (err, user)=> {
+//             if (err){
+//                 return done(err,false);
+//             }
+//             if(!err && user!== null){
+//                 return done(null, user);
+//             }
+//             else{
+//                 user = new User({username:profile.displayName});
+//                 user.facebookId = profile.id;
+//                 user.firstname = profile.name.givenName;
+//                 user.lastname = profile.name.familyName;
+//                 user.save((err, user)=>{
+//                     if (err)
+//                         return done(err, false);
 
-                   else
-                       return done (null,user); 
-                })
-            }
-        });
-    }
-));
+//                    else
+//                        return done (null,user); 
+//                 })
+//             }
+//         });
+//     }
+// ));
 
     
